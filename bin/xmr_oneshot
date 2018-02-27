@@ -8,7 +8,7 @@ xmr_init
 if [ $# -gt 0 ]; then
     args=("$@")
 else
-    args=("-rpcallowip=::/0")
+    args=("-rpc-bind-ip=0.0.0.0")
 fi
 
 exec monerod "${args[@]}"
