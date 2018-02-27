@@ -11,11 +11,8 @@ if [ ! -e "$HOME/.bitmonero/bitmonero.conf" ]; then
 
     # Seed a random password for JSON RPC server
     cat <<EOF > $HOME/.bitmonero/bitmonero.conf
-disablewallet=${DISABLEWALLET:-1}
-printtoconsole=${PRINTTOCONSOLE:-1}
-rpcuser=${RPCUSER:-monerorpc}
-rpcpassword=${RPCPASSWORD:-`dd if=/dev/urandom bs=33 count=1 2>/dev/null | base64`}
-txindex=1
+rpc-bind-ip=0.0.0.0
+confirm-external-bind=1
 EOF
 
 fi
