@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y curl bzip2 \
 
 ADD https://dlsrc.getmonero.org/cli/monero-linux-x64-v0.12.0.0.tar.bz2 /tmp/
 RUN tar -xjvf /tmp/monero-linux-x64-v0.12.0.0.tar.bz2 -C /tmp/ \
-    && cp /tmp/monero-v0.12.2.0/*  /usr/local/bin \
+    && cp /tmp/monero-v0.12.0.0/*  /usr/local/bin \
     && rm -rf /tmp/monero-linux-x64-v0.12.0.0.tar.bz2
 
 ADD ./bin /usr/local/bin
