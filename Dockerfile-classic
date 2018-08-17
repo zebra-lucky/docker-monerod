@@ -1,0 +1,59 @@
+FROM ubuntu:xenial
+MAINTAINER <zebra.lucky@gmail.com>
+
+ENV SRC_DIR /usr/local/src/monero
+
+ARG USER_ID
+ARG GROUP_ID
+
+ENV HOME /monero
+
+# add user with specified (or default) user/group ids
+ENV USER_ID ${USER_ID:-1000}
+ENV GROUP_ID ${GROUP_ID:-1000}
+RUN groupadd -g ${GROUP_ID} monero
+RUN useradd -u ${USER_ID} -g monero -s /bin/bash -m -d /monero monero
+
+RUN chown monero:monero -R /monero
+
+WORKDIR $SRC_DIR
+
+RUN set -x \
+  && buildDeps=' \
+      ca-certificates \
+      cmake \
+      g++ \
+      git \
+      libboost1.58-all-dev \
+      libssl-dev \
+      make \
+      pkg-config \
+  ' \
+  && apt-get -qq update \
+  && apt-get -qq --no-install-recommends install $buildDeps \
+  \
+  && git clone https://github.com/monero-classic/monero.git $SRC_DIR \
+  && make -j$(nproc) release-static \
+  && cp build/release/bin/* /usr/local/bin/ \
+  \
+  && rm -r $SRC_DIR \
+  && apt-get -qq --auto-remove purge $buildDeps \
+  && rm -rf /var/lib/apt/lists/*
+
+
+ADD ./bin /usr/local/bin
+RUN chmod a+x /usr/local/bin/*
+
+# For some reason, docker.io (0.9.1~dfsg1-2) pkg in Ubuntu 14.04 has permission
+# denied issues when executing /bin/bash from trusted builds.  Building locally
+# works fine (strange).  Using the upstream docker (0.11.1) pkg from
+# http://get.docker.io/ubuntu works fine also and seems simpler.
+USER monero
+
+VOLUME ["/monero"]
+
+EXPOSE 18080 18081 38080 38081
+
+WORKDIR /monero
+
+CMD ["xmr_oneshot"]
