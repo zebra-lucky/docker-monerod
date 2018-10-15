@@ -17,7 +17,7 @@ RUN chown monero:monero -R /monero
 RUN apt-get update && apt-get install -y curl bzip2 \
     && rm -rf /var/lib/apt/lists/*
 
-ADD https://github.com/monero-project/monero/releases/download/v0.12.3.0/monero-linux-x64-v0.12.3.0.tar.bz2 /tmp/
+ADD https://github.com/monero-project/monero/releases/download/v0.13.0.2/monero-linux-x64-v0.13.0.2.tar.bz2 /tmp/
 RUN tar -xjvf /tmp/monero-linux-x64-* -C /tmp/ \
     && cp /tmp/monero-v*/*  /usr/local/bin \
     && rm -rf /tmp/monero-linux-x64-* /tmp/monero-v*/*
