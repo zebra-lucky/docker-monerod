@@ -1,5 +1,5 @@
 FROM ubuntu:xenial
-MAINTAINER Kyle Manna <kyle@kylemanna.com>
+MAINTAINER <zebra.lucky@gmail.com>
 
 ARG USER_ID
 ARG GROUP_ID
@@ -14,13 +14,16 @@ RUN useradd -u ${USER_ID} -g monero -s /bin/bash -m -d /monero monero
 
 RUN chown monero:monero -R /monero
 
-RUN apt-get update && apt-get install -y curl bzip2 \
+RUN apt-get update && apt-get install -y wget bzip2 \
     && rm -rf /var/lib/apt/lists/*
 
-ADD https://github.com/monero-project/monero/releases/download/v0.14.0.2/monero-linux-x64-v0.14.0.2.tar.bz2 /tmp/
-RUN tar -xjvf /tmp/monero-linux-x64-* -C /tmp/ \
-    && cp /tmp/monero-v*/*  /usr/local/bin \
-    && rm -rf /tmp/monero-linux-x64-* /tmp/monero-v*/*
+RUN url="https://dlsrc.getmonero.org/cli/monero-linux-x64-v0.15.0.1.tar.bz2" \
+    && wget $url -O monero.tar.bz2 \
+    && sum="8d61f992a7e2dbc3d753470b4928b5bb9134ea14cf6f2973ba11d1600c0ce9ad" \
+    && echo $sum monero.tar.bz2 | sha256sum -c \
+    && tar -xjvf monero.tar.bz2 -C /tmp/ \
+    && cp /tmp/monero-x86_64-*/*  /usr/local/bin \
+    && rm -rf monero.tar.bz2 /tmp/monero-x86_64-*/
 
 ADD ./bin /usr/local/bin
 RUN chmod a+x /usr/local/bin/*
